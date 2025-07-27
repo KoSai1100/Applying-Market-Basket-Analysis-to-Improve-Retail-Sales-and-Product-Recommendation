@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Model Comparison</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Model Comparison</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Main Metric</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in comparison_data %}
+                <tr>
+                    <td>{{ row.Model }}</td>
+                    <td>{{ row['Main Metric'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+</body>
+</html>

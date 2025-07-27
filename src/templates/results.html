@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Results</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Model Results</h1>
+
+        {% if rf_results %}
+<h2>Random Forest</h2>
+
+{% if rf_results.error %}
+    <div style="color:red;">{{ rf_results.error }}</div>
+{% else %}
+
+    <p>Accuracy: {{ rf_results.accuracy }}</p>
+    <p>Silhouette Score: {{ rf_results.silhouette_score }}</p>
+    <h3>Feature Importances:</h3>
+<table style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr style="border-bottom: 1px solid #ccc;">
+            <th style="text-align:left; padding: 8px;">Feature</th>
+            <th style="text-align:left; padding: 8px;">Importance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feature, importance in rf_results.feature_importances.items() %}
+        <tr>
+            <td style="padding: 8px;">{{ feature }}</td>
+            <td style="padding: 8px;">{{ '%.4f'|format(importance) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+    {% if rf_plot %}
+        <h3>Feature Importances Plot:</h3>
+        <img src="data:image/png;base64,{{ rf_plot }}" />
+    {% endif %}
+
+<h3>Classification Report:</h3>
+<table style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr style="border-bottom: 1px solid #ccc;">
+            <th style="padding: 8px;">Class</th>
+            <th style="padding: 8px;">Precision</th>
+            <th style="padding: 8px;">Recall</th>
+            <th style="padding: 8px;">F1-score</th>
+            <th style="padding: 8px;">Support</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for label, metrics in rf_results.classification_report.items() %}
+            {% if metrics is mapping %}
+            <tr>
+                <td style="padding: 8px;">{{ label }}</td>
+                <td style="padding: 8px;">{{ '%.2f'|format(metrics.precision) }}</td>
+                <td style="padding: 8px;">{{ '%.2f'|format(metrics.recall) }}</td>
+                <td style="padding: 8px;">{{ '%.2f'|format(metrics['f1-score']) }}</td>
+                <td style="padding: 8px;">{{ metrics.support }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endif %}
+{% endif %}
+
+{% if lstm_results %}
+    <h2>LSTM</h2>
+    <p>MSE: {{ lstm_results.mse }}</p>
+    <p>MAE: {{ lstm_results.mae }}</p>
+    {% if forecast_plot %}
+        <h3>Forecast Plot:</h3>
+        <img src="data:image/png;base64,{{ forecast_plot }}" />
+    {% endif %}
+    {% if loss_curve_plot %}
+        <h3>Loss Curve:</h3>
+        <img src="data:image/png;base64,{{ loss_curve_plot }}" />
+    {% endif %}
+{% endif %}
+
+{% if apriori_results %}
+<h2>Apriori</h2>
+{% if apriori_results.error %}
+    <div style="color:red;">{{ apriori_results.error }}</div>
+{% else %}
+    <p>Number of Rules Generated: {{ apriori_results.num_rules }}</p>
+    <h3>Example Rules:</h3>
+
+<table style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr style="border-bottom: 1px solid #ccc;">
+            <th style="text-align:left; padding: 8px;">Antecedents</th>
+            <th style="text-align:left; padding: 8px;">Consequents</th>
+            <th style="text-align:left; padding: 8px;">Lift</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rule in apriori_results.example_rules %}
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 8px;">{{ rule.antecedents }}</td>
+            <td style="padding: 8px;">{{ rule.consequents }}</td>
+            <td style="padding: 8px;">{{ '%.3f'|format(rule.lift) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    {% if apriori_plot %}
+        <h3>Top Apriori Rules by Lift:</h3>
+        <img src="data:image/png;base64,{{ apriori_plot }}" />
+    {% endif %}
+{% endif %}
+{% endif %}
+<button type="button" onclick="window.location.href='{{ url_for('index') }}'" 
+        style="margin-top: 20px; margin-bottom: 60px; padding: 12px 24px; font-size: 16px; cursor: pointer; border-radius: 6px; border: none; background-color: #007BFF; color: white;">
+    <div style="font-weight: bold; font-size: 18px;">&#x21A9; Back to Home</div>
+    <div style="font-size: 12px; font-weight: normal;">Click to return to the main page</div>
+</button>
+
+        
+    </div>
+    
+</body>
+</html>
+
+<style>
+table {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    margin-top: 10px;
+    width: 100%;
+}
+button:hover {
+    background-color: #0056b3;
+}
+
+th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+td, th {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+}
+</style>
+
