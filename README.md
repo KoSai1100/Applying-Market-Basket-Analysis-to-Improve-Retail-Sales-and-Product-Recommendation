@@ -1,4 +1,4 @@
-# CP2-SAM Web Application
+# Web Application For Market basket Analysis
 
 This project is a web application that implements three different machine learning models: Random Forest, LSTM, and Apriori for market basket analysis. The application allows users to input data, run analyses, and view results through a user-friendly interface.
 
